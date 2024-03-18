@@ -13,13 +13,17 @@ function App()
 
     useEffect(() =>
     {
+        let isMounted = true;
         async function fetchData()
         {
             try
             {
                 const response = await fetch('https://www.deckofcardsapi.com/api/deck/new/draw/?count=12')
                 const jsonData = await response.json();
-                setData(jsonData.cards)
+                if(isMounted)
+                {
+                    setData(jsonData.cards)
+                }
             }
 
             catch(err)
@@ -29,6 +33,8 @@ function App()
         }
         fetchData()
         setClickedCards([]);
+        return () => isMounted = false;
+        
     }, [])
 
     function shuffleCards()
@@ -39,11 +45,11 @@ function App()
 
     function handleBestScore()
     {
-        setScore(0);
         if(score > bestScore)
         {
             setBestScore(score)
         }
+        setScore(0);
     }
 
     function handleCardClick(cardCode)
